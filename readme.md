@@ -3,6 +3,11 @@ stdioify
 
 stdioify is a dirty little hack for making applications that read from and write to files use stdin/stdout instead.
 
+Installation
+------------
+
+    npm install stdioify [-g]
+
 Example
 -------
 

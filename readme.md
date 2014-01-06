@@ -6,7 +6,7 @@ stdioify is a dirty little hack for making applications that read from and write
 Example
 -------
 
-To make [traceur][https://github.com/google/traceur-compiler] read from stdin and output to stdout, run the following command
+To make [traceur](https://github.com/google/traceur-compiler) read from stdin and output to stdout, run the following command
 
     cat test.js | stdioify --command traceur --out-arg="--out" --suffix=".js"
 

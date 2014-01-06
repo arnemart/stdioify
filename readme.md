@@ -16,8 +16,10 @@ stdioify will then read input data from stdin, write it out to a temporary file,
 
 Finally, it will read the output file and write its data to stdout.
 
-Programmatic usage
-------------------
+Use in code
+-----------
+
+stdioify can also be used as a library in node.js, of course.
 
     var stdioify = require('./stdioify');
     

@@ -16,6 +16,24 @@ stdioify will then read input data from stdin, write it out to a temporary file,
 
 Finally, it will read the output file and write its data to stdout.
 
+Programmatic usage
+------------------
+
+    var stdioify = require('./stdioify');
+    
+    var js = 'class Greeter { sayHi() { console.log("Hi!"); } }\n' +
+             'var greeter = new Greeter();\n' +
+             'greeter.sayHi();';
+    
+    stdioify(js, {
+        command:   'traceur',
+        'out-arg': '--out',
+        suffix:    '.js'
+    }, function(err, data) {
+        console.log(data.toString());
+    });
+
+
 Options
 -------
 

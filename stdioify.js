@@ -1,52 +1,40 @@
-#!/usr/bin/env node
-
 var temp = require('temp');
 var spawn = require('child_process').spawn;
 var fs = require('fs');
-var argv = require('optimist')
-    .usage('Usage: $0 --command="/path/to/command" --in-arg="[in-arg]" --out-arg="[out-arg]" --suffix=".js" [-- --any-extra-args]')
-    .demand(['command'])
-    .alias({
-        'command': 'c',
-        'in-arg': 'i',
-        'out-arg': 'o',
-        'suffix': 's'
-    })
-    .default('suffix', '.stdioify')
-    .describe({
-        'command': 'Path to executable to run',
-        'in-arg': 'Argument for in-file passed to command',
-        'out-arg': 'Argument for out-file passed to command',
-        'suffix': 'Suffix to use for temp files'
-    })
-    .argv;
 
-temp.track();
-
-getTempFiles(function(inFile, outFile) {
-    process.stdin.on('data', function(data) {
-        writeAndRun(data, inFile, outFile);
+module.exports = function(data, argv, callback) {
+    if (!argv.suffix) {
+        argv.suffix = 'stdioify';
+    }
+    temp.track();
+    getTempFiles(argv, function(err, inFile, outFile) {
+        writeAndRun(data, inFile, outFile, argv, function(err, data) {
+            if (err) {
+                return callback(err);
+            }
+            callback(null, data);
+        });
     });
-});
+};
 
-function getTempFiles(callback) {
+function getTempFiles(argv, callback) {
     temp.open({suffix: argv.suffix}, function(err, inFile) {
         if (err) {
-            return error(err);
+            return callback(err);
         }
         temp.open({suffix: argv.suffix}, function(err, outFile) {
             if (err) {
-                return error(err);
+                return callback(err);
             }
-            callback(inFile, outFile);
+            callback(null, inFile, outFile);
         });
     });
 }
 
-function writeAndRun(data, inFile, outFile) {
+function writeAndRun(data, inFile, outFile, argv, callback) {
     fs.writeFile(inFile.path, data, function(err) {
         if (err) {
-            return error(err);
+            return callback(err);
         }
         var args = [argv['out-arg'], outFile.path];
         if (argv['in-arg']) {
@@ -57,32 +45,25 @@ function writeAndRun(data, inFile, outFile) {
         var cmd = spawn(argv.command, args, {
             cwd: process.cwd()
         });
-        cmd.stderr.on('data', function(data) {
-            process.stderr.write(data);
-        });
+        cmd.stderr.pipe(process.stderr);
         if (!argv['out-arg']) {
             cmd.stdout.pipe(process.stdout);
         }
         cmd.on('close', function(code) {
             if (code === 0 && argv['out-arg']) {
-                readAndReturn(outFile);
-            } else {
-                process.exit(code);
+                readAndReturn(outFile, callback);
+            } else if (!callback) {
+                callback('Return code ' + code);
             }
         });
     });
 }
 
-function readAndReturn(outFile) {
+function readAndReturn(outFile, callback) {
     fs.readFile(outFile.path, function(err, data) {
         if (err) {
-            return error(err);
+            return callback(err);
         }
-        process.stdout.write(data);
+        callback(null, data);
     });
-}
-
-function error(err) {
-    process.stderr.write(error);
-    process.exit(1);
 }

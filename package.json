@@ -8,8 +8,9 @@
     "url": "https://github.com/arnemart/stdioify.git"
   },
   "bin": {
-    "stdioify": "./stdioify.js"
+    "stdioify": "./cli"
   },
+  "main": "./stdioify",
   "dependencies": {
     "temp": "~0.6.0",
     "optimist": "~0.6.0"

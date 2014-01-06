@@ -5,7 +5,7 @@ var spawn = require('child_process').spawn;
 var fs = require('fs');
 var argv = require('optimist')
     .usage('Usage: $0 --command="/path/to/command" --in-arg="[in-arg]" --out-arg="[out-arg]" --suffix=".js" [-- --any-extra-args]')
-    .demand(['command', 'out-arg'])
+    .demand(['command'])
     .alias({
         'command': 'c',
         'in-arg': 'i',
@@ -60,8 +60,11 @@ function writeAndRun(data, inFile, outFile) {
         cmd.stderr.on('data', function(data) {
             process.stderr.write(data);
         });
+        if (!argv['out-arg']) {
+            cmd.stdout.pipe(process.stdout);
+        }
         cmd.on('close', function(code) {
-            if (code === 0) {
+            if (code === 0 && argv['out-arg']) {
                 readAndReturn(outFile);
             } else {
                 process.exit(code);

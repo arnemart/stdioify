@@ -1,0 +1,18 @@
+{
+  "name": "stdioify",
+  "version": "0.0.1",
+  "author": "Arne Martin Aurlien <am@aurlien.net>",
+  "description": "Make any application that reads and writes files read and write from stdin/stdout instead.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arnemart/stdioify.git"
+  },
+  "bin": {
+    "stdioify": "./stdioify.js"
+  },
+  "dependencies": {
+    "temp": "~0.6.0",
+    "optimist": "~0.6.0"
+  },
+  "license": "WTFPL"
+}

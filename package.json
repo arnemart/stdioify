@@ -15,5 +15,8 @@
     "temp": "~0.6.0",
     "optimist": "~0.6.0"
   },
-  "license": "WTFPL"
+  "license": "WTFPL",
+  "devDependencies": {
+    "buster": "~0.7.8"
+  }
 }

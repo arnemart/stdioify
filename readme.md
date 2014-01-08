@@ -32,13 +32,13 @@ stdioify can also be used as a library in node.js, of course.
              'var greeter = new Greeter();\n' +
              'greeter.sayHi();';
     
-    stdioify(js, {
+    stdioify({
         command:   'traceur',
         'out-arg': '--out',
         suffix:    '.js'
-    }, function(err, data) {
+    }).on('data', function(data) {
         console.log(data.toString());
-    });
+    }).write(js);
 
 
 Options

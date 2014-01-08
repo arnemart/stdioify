@@ -1,8 +1,15 @@
 var temp = require('temp');
 var spawn = require('child_process').spawn;
 var fs = require('fs');
+var stream = require('stream');
 
-module.exports = function(data, argv, callback) {
+module.exports = stdioify;
+module.exports.stream = stdioifyStream;
+
+function stdioify(data, argv, callback) {
+    if (!argv && !callback && Object.prototype.toString.call(data) === '[object Object]') {
+        return stdioifyStream(data);
+    }
     if (!argv.suffix) {
         argv.suffix = 'stdioify';
     }
@@ -15,7 +22,22 @@ module.exports = function(data, argv, callback) {
             callback(null, data);
         });
     });
-};
+}
+
+function stdioifyStream(argv) {
+    var strm = new stream.Duplex();
+    strm._write = function(chunk, encoding, callback) {
+        stdioify(chunk, argv, function(err, data) {
+            if (err) {
+                return callback(err);
+            }
+            strm.push(data);
+            callback();
+        });
+    };
+    strm._read = function() {};
+    return strm;
+}
 
 function getTempFiles(argv, callback) {
     temp.open({suffix: argv.suffix}, function(err, inFile) {
@@ -41,7 +63,9 @@ function writeAndRun(data, inFile, outFile, argv, callback) {
             args.push(argv['in-arg']);
         }
         args.push(inFile.path);
-        args.concat(argv._);
+        if (argv._) {
+            args = args.concat(argv._);
+        }
         var cmd = spawn(argv.command, args, {
             cwd: process.cwd()
         });

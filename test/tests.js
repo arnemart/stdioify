@@ -66,8 +66,16 @@ b.testCase('stdioify', {
         process.stdin.end(r);
     },
     'suffixes temp files correctly': function(done) {
-        var process = exec('./cli.js --command="test/testapp.js" --in-arg="--inFile" --out-arg="--outFile" --suffix=".js" -- --returnFilename', {}, function(err, stdout, stderr) {
+        var process = exec('./cli.js --command="test/testapp.js" --in-arg="--inFile" --out-arg="--outFile" --suffix=".js" -- --returnFilename', {}, function(err, stdout) {
             b.assert.match(stdout, /\.js$/);
+            done();
+        });
+        process.stdin.end(' ');
+    },
+    'handles errors on command line': function(done) {
+        var process = exec('./cli.js --command="idonotexist" --in-arg="--inFile" --out-arg="--outFile"', {}, function(err, stdout, stderr) {
+            b.assert.equals(stdout, '');
+            b.assert.equals(stderr, 'Error: spawn ENOENT');
             done();
         });
         process.stdin.end(' ');

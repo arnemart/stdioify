@@ -22,7 +22,7 @@ var argv = require('optimist')
 process.stdin.on('data', function(data) {
     stdioify(data, argv, function(err, data) {
         if (err) {
-            process.stderr.write(err);
+            process.stderr.write('Error: ' + err.syscall + ' ' + err.code);
             process.exit(1);
         }
         process.stdout.write(data);

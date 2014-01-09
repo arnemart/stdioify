@@ -22,5 +22,13 @@
   },
   "scripts": {
     "test": "node test/tests.js"
+  },
+  "keywords": [
+    "stdio",
+    "stdin",
+    "stdout"
+  ],
+  "engines": {
+      "node": ">=0.8"
   }
 }

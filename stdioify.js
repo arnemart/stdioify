@@ -1,7 +1,7 @@
 var temp = require('temp');
 var spawn = require('child_process').spawn;
 var fs = require('fs');
-var stream = require('stream');
+var through = require('through');
 
 module.exports = stdioify;
 module.exports.stream = stdioifyStream;
@@ -25,17 +25,14 @@ function stdioify(data, argv, callback) {
 }
 
 function stdioifyStream(argv) {
-    var strm = new stream.Duplex();
-    strm._write = function(chunk, encoding, callback) {
-        stdioify(chunk, argv, function(err, data) {
+    var strm = through(function(data) {
+        stdioify(data, argv, function(err, data) {
             if (err) {
-                return callback(err);
+                return this.emit('error', err);
             }
-            strm.push(data);
-            callback();
-        });
-    };
-    strm._read = function() {};
+            this.queue(data);
+        }.bind(this));
+    });
     return strm;
 }
 

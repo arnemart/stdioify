@@ -21,6 +21,6 @@
     "buster": "~0.7.8"
   },
   "scripts": {
-    "test": "node_modules/.bin/buster-test"
+    "test": "node test/tests.js"
   }
 }

@@ -35,6 +35,20 @@ b.testCase('stdioify', {
             done();
         }).write(r);
     },
+    'handles errors': function(done) {
+        var onData = this.spy();
+        stdioify({
+            'command': 'idonotexist',
+            'out-arg': '--outFile'
+        }).on('data', onData)
+          .on('error', function(data) {
+            b.assert.equals(data.toString(), 'Error: spawn ENOENT');
+            setTimeout(function() {
+                b.refute.called(onData);
+                done();
+            }, 100);
+        }).write('some data');
+    },
     'works from command line': function(done) {
         var r = randomString();
         var process = exec('./cli.js --command="test/testapp.js" --in-arg="--inFile" --out-arg="--outFile"', {}, function(err, stdout) {

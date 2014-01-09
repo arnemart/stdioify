@@ -66,6 +66,9 @@ function writeAndRun(data, inFile, outFile, argv, callback) {
         var cmd = spawn(argv.command, args, {
             cwd: process.cwd()
         });
+        cmd.on('error', function(err) {
+            return callback(err);
+        });
         cmd.stderr.pipe(process.stderr);
         if (!argv['out-arg']) {
             cmd.stdout.pipe(process.stdout);

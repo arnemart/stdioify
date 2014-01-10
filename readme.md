@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/arnemart/stdioify.png?branch=master)](https://travis-ci.org/arnemart/stdioify)
+
 stdioify
 ========
 

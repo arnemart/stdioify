@@ -1,4 +1,4 @@
-stdioify
+stdioify [![Build Status](https://travis-ci.org/arnemart/stdioify.png?branch=master)](https://travis-ci.org/arnemart/stdioify)
 ========
 
 stdioify is a dirty little hack for making applications that read from and write to files use stdin/stdout instead.

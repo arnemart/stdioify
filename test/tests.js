@@ -35,6 +35,20 @@ b.testCase('stdioify', {
             done();
         }).write(r);
     },
+    'stream supports several writes': function(done) {
+        var r = ['a','b','c'];
+        var i = 0;
+        var strm = stdioify({
+            'command': 'test/testapp.js',
+            'out-arg': '--outFile'
+        }).on('data', function() {
+            if (i++ === 2) {
+                b.assert(true);
+                done();
+            }
+        });
+        r.forEach(strm.write.bind(strm));
+    },
     'handles errors': function(done) {
         var onData = this.spy();
         stdioify({

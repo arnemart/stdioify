@@ -1,7 +1,7 @@
 var temp = require('temp');
 var spawn = require('child_process').spawn;
 var fs = require('fs');
-var through = require('through');
+var map = require('map-stream');
 
 module.exports = stdioify;
 module.exports.stream = stdioifyStream;
@@ -25,13 +25,13 @@ function stdioify(data, argv, callback) {
 }
 
 function stdioifyStream(argv) {
-    var strm = through(function(data) {
-        stdioify(data, argv, function(err, data) {
+    var strm = map(function(inData, callback) {
+        stdioify(inData, argv, function(err, data) {
             if (err) {
-                return this.emit('error', err);
+                return callback(err);
             }
-            this.queue(data);
-        }.bind(this));
+            callback(null, data);
+        });
     });
     return strm;
 }

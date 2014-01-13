@@ -1,6 +1,6 @@
 {
   "name": "stdioify",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "Arne Martin Aurlien <am@aurlien.net>",
   "description": "Make any application that reads and writes files read and write from stdin/stdout instead.",
   "repository": {

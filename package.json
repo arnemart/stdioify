@@ -24,6 +24,7 @@
     "test": "node test/tests.js"
   },
   "keywords": [
+    "cli",
     "stdio",
     "stdin",
     "stdout"
